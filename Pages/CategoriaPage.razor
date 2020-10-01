@@ -1,0 +1,131 @@
+@page "/categoria"
+@page "/categoria/{CategoriaId:int}"
+@using Maria_P1_AP2.Models
+@using Maria_P1_AP2.BLL
+
+@inject IToastService toast
+
+<EditForm Model="categoria" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator/>
+    
+        <div class="card">
+
+            <div class="card-header">
+                <h3>Registro de Categoria</h3>
+            </div>
+
+            <div class="card-body">
+                <form>
+                    <div class="form-row align-items-center">
+                        <div class="col">
+                            <div class="form-group">
+                                <label>CategoriaID:</label>
+                                <div class="input-group">
+                                    <InputNumber @bind-Value="categoria.CategoriaId" class="form-control col-4" />
+                                    <ValidationMessage For="(() => categoria.CategoriaId)"></ValidationMessage>
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar">Buscar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-5">
+                        <label>DESCRIPCION:</label>
+                        <InputText @bind-Value="categoria.Descripcion" class="form-control" />
+                        <ValidationMessage For="@(() => categoria.Descripcion)" />
+                    </div>
+
+                
+                </form>
+            </div>
+
+            <div class="card-footer">
+                <div class="form-group text-center" display: inline-block>
+                    <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo">Nuevo</button>
+                    <button type="submit" class="btn btn-lg btn-success">Guardar</button>
+                    <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar">Eliminar</button>
+                </div>
+            </div>
+
+        </div>
+</EditForm>
+
+
+@code {
+
+    Categorias categoria= new Categorias();
+
+    [Parameter]
+    public int CategoriaId { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Nuevo();
+        Categorias auxCategoria;
+        if (CategoriaId > 0)
+        {
+            auxCategoria = CategoriaBLL.Buscar(CategoriaId);
+            if (auxCategoria != null)
+                categoria = auxCategoria;
+            else
+                toast.ShowInfo("No encontrado..");
+        }
+    }
+
+   
+
+    private void Nuevo()
+    {
+        this.categoria = new Categorias();
+    }
+
+    private void Buscar()
+    {
+        var encontrado = CategoriaBLL.Buscar(categoria.CategoriaId);
+        if (encontrado != null)
+            this.categoria = encontrado;
+        else
+        {
+            toast.ShowWarning("No encontrado");
+        }
+
+    }
+
+    private void Guardar()
+    {
+        bool paso;
+        paso = CategoriaBLL.Guardar(categoria);
+
+        if (paso)
+        {
+            Nuevo();
+            toast.ShowSuccess("Guardado correctamente");
+        }
+        else
+        {
+            toast.ShowError("No fue posible guardar");
+        }
+
+    }
+
+    private void Eliminar()
+    {
+        bool elimino;
+
+        elimino = CategoriaBLL.Eliminar(categoria.CategoriaId);
+
+        if (elimino)
+        {
+            Nuevo();
+            toast.ShowSuccess("Eliminado correctamente");
+        }
+        else
+        {
+            toast.ShowError("No fue posible eliminar");
+        }
+    }
+
+
+}
