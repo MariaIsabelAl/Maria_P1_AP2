@@ -9,7 +9,6 @@
     <DataAnnotationsValidator/>
     
         <div class="card">
-
             <div class="card-header">
                 <h3>Registro de Categoria</h3>
             </div>
@@ -31,9 +30,9 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-5">
+                    <div class="form-group ">
                         <label>DESCRIPCION:</label>
-                        <InputText @bind-Value="categoria.Descripcion" class="form-control" />
+                        <InputText @bind-Value="categoria.Descripcion" class="form-control col-5" />
                         <ValidationMessage For="@(() => categoria.Descripcion)" />
                     </div>
 
